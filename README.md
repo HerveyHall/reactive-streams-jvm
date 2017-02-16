@@ -78,6 +78,7 @@ followed by a possibly unbounded number of `onNext` signals (as requested by `Su
 | <a name="term_responsivity">Responsivity</a> | Readiness/ability to respond. In this document used to indicate that the different components should not impair eachothers ability to respond. |
 | <a name="term_non-obstructing">Non-obstructing</a> | Quality describing a method which is as quick to execute as possible—on the calling thread. This means, for example, avoids heavy computations and other things that would stall the caller´s thread of execution. |
 | <a name="term_terminal_state">Terminal state</a> | For a Publisher: The point where `onComplete` or `onError` has been signalled. For a Subscriber: The point where an `onComplete` or `onError` has been received.|
+| <a name="term_nop">NOP</a> | No operation—does nothing.|
 
 
 ### SPECIFICATION
@@ -176,9 +177,9 @@ public interface Subscription {
 | [:bulb:](#3.4 "3.4 explained") | *The intent of this rule is to establish that `request` is intended to be a non-obstructing method, and should be as quick to execute as possible on the calling thread, so avoid heavy computations and other things that would stall the caller´s thread of execution.* |
 | <a name="3.5">5</a>       | `Subscription.cancel` MUST respect the responsivity of its caller by returning in a timely manner, MUST be idempotent and MUST be thread-safe. |
 | [:bulb:](#3.5 "3.5 explained") | *The intent of this rule is to establish that `cancel` is intended to be a non-obstructing method, and should be as quick to execute as possible on the calling thread, so avoid heavy computations and other things that would stall the caller´s thread of execution. Furthermore, it is also important that it is possible to call it multiple times without any adverse effects.* |
-| <a name="3.6">6</a>       | After the `Subscription` is cancelled, additional `Subscription.request(long n)` MUST be NOPs. |
+| <a name="3.6">6</a>       | After the `Subscription` is cancelled, additional `Subscription.request(long n)` MUST be [NOPs](#term_nop). |
 | [:bulb:](#3.6 "3.6 explained") | *The intent of this rule is to establish a causal relationship between cancellation of a subscription and the subsequent non-operation of requesting more elements.* |
-| <a name="3.7">7</a>       | After the `Subscription` is cancelled, additional `Subscription.cancel()` MUST be NOPs. |
+| <a name="3.7">7</a>       | After the `Subscription` is cancelled, additional `Subscription.cancel()` MUST be [NOPs](#term_nop). |
 | [:bulb:](#3.7 "3.7 explained") | *The intent of this rule is superseded by [3.5](#3.5).* |
 | <a name="3.8">8</a>       | While the `Subscription` is not cancelled, `Subscription.request(long n)` MUST register the given number of additional elements to be produced to the respective subscriber. |
 | [:bulb:](#3.8 "3.8 explained") | *The intent of this rule is to make sure that `request`-ing is an additive operation, as well as ensuring that a request for elements is delivered to the Publisher.* |
